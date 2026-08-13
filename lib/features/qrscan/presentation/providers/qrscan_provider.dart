@@ -14,7 +14,14 @@ class QrScanProvider extends ChangeNotifier {
   final ClearAllScans clearAllScansUseCase;
 
   bool isLoading = false;
+  bool isProcessingScan = false;
   String? error;
+
+  void setProcessingScan(bool value) {
+    isProcessingScan = value;
+    notifyListeners();
+  }
+
   List<Scan> scans = [];
   bool _isInitialized = false;
 

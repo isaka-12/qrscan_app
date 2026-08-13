@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           navigatorKey: navigatorKey,
-          title: "QR Scanner",
+          title: "Locus",
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
