@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/utils/location_helper.dart';
+import '../../../qr_maker/presentation/pages/create_page.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
 import '../../domain/entities/scan.dart';
 import '../providers/qrscan_provider.dart';
 import 'qrscan_page.dart';
@@ -21,25 +22,26 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   MobileScannerController? _scanController;
 
   late final List<Widget> _pages;
+  static const _titles = ['Locus', 'Scan History', 'Create QR', 'Settings'];
 
   @override
   void initState() {
     super.initState();
     _pages = [
-      QrScanPage(onViewAllTapped: () => _goToHistory()),
+      QrScanPage(
+        onViewAllTapped: () => _onItemTapped(1),
+        onScanTapped: _startScanning,
+        onCreateTapped: () => _onItemTapped(2),
+      ),
       const QrScanHistoryPage(),
+      const CreatePage(),
+      const SettingsPage(),
     ];
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-    });
-  }
-
-  void _goToHistory() {
-    setState(() {
-      _selectedIndex = 1;
     });
   }
 
@@ -73,7 +75,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.4),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -88,7 +90,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: colorScheme.primary.withOpacity(0.1),
+                        color: colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -277,12 +279,12 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
     final qrScanProvider = Provider.of<QrScanProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? 'Locus' : 'Scan History'),
+        automaticallyImplyLeading: false,
+        title: Text(_titles[_selectedIndex]),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         elevation: 0,
@@ -295,96 +297,13 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             ),
         ],
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            // Modern header with subtle background
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.settings_outlined,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Settings',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Theme toggle with modern design
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: themeProvider.isDarkMode
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                      : Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                  color: themeProvider.isDarkMode
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                  size: 20,
-                ),
-              ),
-              title: Text(
-                themeProvider.isDarkMode ? 'Dark Mode' : 'Light Mode',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              trailing: Switch(
-                value: themeProvider.isDarkMode,
-                onChanged: (value) {
-                  themeProvider.toggleTheme();
-                },
-                activeColor: Theme.of(context).colorScheme.primary,
-                activeTrackColor: Theme.of(
-                  context,
-                ).colorScheme.primary.withOpacity(0.5),
-                inactiveThumbColor: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant,
-                inactiveTrackColor: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest,
-              ),
-            ),
-
-            // Minimal divider
-            Divider(
-              height: 1,
-              thickness: 1,
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-            ),
-
-            // Spacer to push content to top
-            const Spacer(),
-          ],
+      // Keeps content readable on tablets and in landscape.
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 840),
+          child: IndexedStack(index: _selectedIndex, children: _pages),
         ),
       ),
-      body: IndexedStack(index: _selectedIndex, children: _pages),
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(
           floatingActionButtonTheme: Theme.of(context).floatingActionButtonTheme
@@ -413,25 +332,58 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         child: Row(
           children: [
+            // Two tabs each side of the Scan button.
             Expanded(
-              child: _NavItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home,
-                label: 'Home',
-                index: 0,
-                selectedIndex: _selectedIndex,
-                onTap: _onItemTapped,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _NavItem(
+                      icon: Icons.home_outlined,
+                      activeIcon: Icons.home,
+                      label: 'Home',
+                      index: 0,
+                      selectedIndex: _selectedIndex,
+                      onTap: _onItemTapped,
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavItem(
+                      icon: Icons.history_outlined,
+                      activeIcon: Icons.history,
+                      label: 'History',
+                      index: 1,
+                      selectedIndex: _selectedIndex,
+                      onTap: _onItemTapped,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(width: 80),
             Expanded(
-              child: _NavItem(
-                icon: Icons.history_outlined,
-                activeIcon: Icons.history,
-                label: 'History',
-                index: 1,
-                selectedIndex: _selectedIndex,
-                onTap: _onItemTapped,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _NavItem(
+                      icon: Icons.add_box_outlined,
+                      activeIcon: Icons.add_box,
+                      label: 'Create',
+                      index: 2,
+                      selectedIndex: _selectedIndex,
+                      onTap: _onItemTapped,
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavItem(
+                      icon: Icons.settings_outlined,
+                      activeIcon: Icons.settings,
+                      label: 'Settings',
+                      index: 3,
+                      selectedIndex: _selectedIndex,
+                      onTap: _onItemTapped,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -466,22 +418,32 @@ class _NavItem extends StatelessWidget {
         ? colorScheme.primary
         : colorScheme.onSurfaceVariant;
 
-    return InkWell(
-      onTap: () => onTap(index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(isSelected ? activeIcon : icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+    return Semantics(
+      selected: isSelected,
+      button: true,
+      child: InkWell(
+        onTap: () => onTap(index),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(isSelected ? activeIcon : icon, color: color, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              // Large system font sizes must not break the fixed-height bar.
+              textScaler: MediaQuery.textScalerOf(
+                context,
+              ).clamp(maxScaleFactor: 1.2),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: color,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

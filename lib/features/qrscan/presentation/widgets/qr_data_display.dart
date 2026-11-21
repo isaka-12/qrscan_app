@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:qrscan_app/core/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -177,7 +177,7 @@ class QRDataDisplay extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppTheme.appAccent.withOpacity(0.1),
+                  color: AppTheme.appAccent.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -261,12 +261,12 @@ class QRDataDisplay extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isActionable
-              ? AppTheme.appBlue.withOpacity(0.05)
+              ? AppTheme.appBlue.withValues(alpha: 0.05)
               : AppTheme.appLightGrey,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isActionable
-                ? AppTheme.appBlue.withOpacity(0.2)
+                ? AppTheme.appBlue.withValues(alpha: 0.2)
                 : AppTheme.appLightGrey,
           ),
         ),
@@ -295,6 +295,7 @@ class QRDataDisplay extends StatelessWidget {
 
   void _handleTap(BuildContext context) async {
     final success = await _launchData(qrData);
+    if (!context.mounted) return;
     if (!success) {
       // Show error message if launching fails
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:qrscan_app/features/qrscan/domain/entities/scan.dart';
 import 'package:qrscan_app/features/qrscan/data/models/scan_model.dart';
 import 'package:qrscan_app/features/qrscan/domain/usecase/save_scan.dart';

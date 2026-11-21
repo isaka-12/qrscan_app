@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// App-inspired theme with modern Material 3 design
 /// Updated color scheme for light and dark modes
@@ -49,6 +49,36 @@ class AppTheme {
   static const Color surfaceCard = secondaryBackgroundLight;
   static const Color surfaceDark = primaryBackgroundDark;
 
+  // Shared button styles: compact padding, 12px radius, and a muted border
+  // when disabled (styleFrom's `side` would keep the accent border).
+  static ButtonStyle _outlinedButtonStyle(Color accent, Color onSurface) =>
+      OutlinedButton.styleFrom(
+        foregroundColor: accent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.3,
+        ),
+      ).copyWith(
+        side: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.disabled)
+              ? BorderSide(color: onSurface.withValues(alpha: 0.12))
+              : BorderSide(color: accent, width: 1.5),
+        ),
+      );
+
+  static ButtonStyle _filledButtonStyle() => FilledButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+    textStyle: const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.3,
+    ),
+  );
+
   /// Light Theme Configuration
   static ThemeData get lightTheme {
     const colorScheme = ColorScheme(
@@ -61,12 +91,16 @@ class AppTheme {
       onTertiary: primaryTextLight,
       error: errorColor,
       onError: primaryTextLight,
-      surface: primaryBackgroundLight,
+      surface: secondaryBackgroundLight,
       onSurface: primaryTextLight,
-      surfaceContainerHighest: secondaryBackgroundLight,
+      surfaceContainerLowest: secondaryBackgroundLight,
+      surfaceContainerLow: Color(0xFFFAFAFA),
+      surfaceContainer: primaryBackgroundLight,
+      surfaceContainerHigh: Color(0xFFF0F0F0),
+      surfaceContainerHighest: Color(0xFFEEEEEE),
       onSurfaceVariant: secondaryTextLight,
-      outline: secondaryTextLight,
-      outlineVariant: secondaryTextLight,
+      outline: Color(0xFFBDBDBD),
+      outlineVariant: Color(0xFFE0E0E0),
       shadow: Colors.black26,
       scrim: Colors.black54,
       inverseSurface: primaryTextLight,
@@ -78,6 +112,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      scaffoldBackgroundColor: primaryBackgroundLight,
       fontFamily: 'System', // Using system font for compatibility
       // App Bar Theme
       appBarTheme: AppBarTheme(
@@ -124,21 +159,12 @@ class AppTheme {
         ),
       ),
 
-      // Outlined Button Theme
+      // Outlined + Filled Button Themes
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: actionLight,
-          side: BorderSide(color: actionLight, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
-        ),
+        style: _outlinedButtonStyle(actionLight, primaryTextLight),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: _filledButtonStyle(),
       ),
 
       // Text Button Theme
@@ -175,14 +201,14 @@ class AppTheme {
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: primaryBackgroundLight,
+        fillColor: secondaryBackgroundLight,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryTextLight),
+          borderSide: BorderSide(color: Color(0xFFBDBDBD)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryTextLight),
+          borderSide: BorderSide(color: Color(0xFFBDBDBD)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -306,14 +332,14 @@ class AppTheme {
       // Chip Theme
       chipTheme: ChipThemeData(
         backgroundColor: primaryBackgroundLight,
-        selectedColor: actionLight.withOpacity(0.12),
+        selectedColor: actionLight.withValues(alpha: 0.12),
         labelStyle: TextStyle(color: primaryTextLight),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
 
       // Divider Theme
       dividerTheme: DividerThemeData(
-        color: secondaryTextLight,
+        color: Color(0xFFE0E0E0),
         thickness: 1,
         space: 1,
       ),
@@ -340,12 +366,16 @@ class AppTheme {
       onTertiary: primaryTextDark,
       error: errorColor,
       onError: primaryTextDark,
-      surface: primaryBackgroundDark,
+      surface: Color(0xFF2A2A2A),
       onSurface: primaryTextDark,
+      surfaceContainerLowest: primaryBackgroundDark,
+      surfaceContainerLow: Color(0xFF262626),
+      surfaceContainer: Color(0xFF2A2A2A),
+      surfaceContainerHigh: Color(0xFF303030),
       surfaceContainerHighest: secondaryBackgroundDark,
       onSurfaceVariant: secondaryTextDark,
-      outline: secondaryTextDark,
-      outlineVariant: secondaryTextDark,
+      outline: Color(0xFF5C5C5C),
+      outlineVariant: Color(0xFF424242),
       shadow: Colors.black54,
       scrim: Colors.black87,
       inverseSurface: primaryTextDark,
@@ -357,6 +387,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      scaffoldBackgroundColor: primaryBackgroundDark,
       fontFamily: 'System', // Using system font for compatibility
       appBarTheme: AppBarTheme(
         backgroundColor: primaryBackgroundDark,
@@ -398,19 +429,10 @@ class AppTheme {
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: actionDark,
-          side: BorderSide(color: actionDark, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
-        ),
+        style: _outlinedButtonStyle(actionDark, primaryTextDark),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: _filledButtonStyle(),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -441,14 +463,14 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: primaryBackgroundDark,
+        fillColor: Color(0xFF2A2A2A),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryTextDark),
+          borderSide: BorderSide(color: Color(0xFF5C5C5C)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: secondaryTextDark),
+          borderSide: BorderSide(color: Color(0xFF5C5C5C)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -564,12 +586,12 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: primaryBackgroundDark,
-        selectedColor: actionDark.withOpacity(0.12),
+        selectedColor: actionDark.withValues(alpha: 0.12),
         labelStyle: TextStyle(color: primaryTextDark),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       dividerTheme: DividerThemeData(
-        color: secondaryTextDark,
+        color: Color(0xFF424242),
         thickness: 1,
         space: 1,
       ),

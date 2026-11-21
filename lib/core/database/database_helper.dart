@@ -24,7 +24,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -48,13 +48,32 @@ class DatabaseHelper {
     await db.execute('''
       CREATE INDEX idx_scans_timestamp ON scans(timestamp DESC)
     ''');
+
+    await _createCreatedCodesTable(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Handle database upgrades here if needed in the future
-    if (oldVersion < newVersion) {
-      // Add upgrade logic here
+    // v2: QR codes made with the QR maker ("My codes").
+    if (oldVersion < 2) {
+      await _createCreatedCodesTable(db);
     }
+  }
+
+  Future<void> _createCreatedCodesTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE created_codes(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT NOT NULL,
+        fields TEXT NOT NULL,
+        style TEXT NOT NULL,
+        data TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX idx_created_codes_updated ON created_codes(updated_at DESC)
+    ''');
   }
 
   Future<void> close() async {

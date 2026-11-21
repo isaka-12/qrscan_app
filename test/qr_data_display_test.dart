@@ -1,8 +1,8 @@
 // Test file for QRDataDisplay widget
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/features/qrscan/presentation/widgets/qr_data_display.dart';
+import 'package:qrscan_app/features/qrscan/presentation/widgets/qr_data_display.dart';
 
 void main() {
   group('QRDataDisplay Tests', () {

@@ -1,5 +1,5 @@
 // lib/features/qrscan/presentation/widgets/scan_details_dialog.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../domain/entities/scan.dart';
 import 'detail_row_widget.dart';
@@ -27,7 +27,7 @@ class ScanDetailsDialog extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(

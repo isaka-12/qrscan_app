@@ -1,5 +1,5 @@
 // lib/features/qrscan/presentation/widgets/empty_state_widget.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum EmptyStateType { noScans, noSearchResults, noHistory, general }
 

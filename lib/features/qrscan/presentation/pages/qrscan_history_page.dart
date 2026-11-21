@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_theme.dart';
@@ -84,7 +84,7 @@ class _QrScanHistoryPageState extends State<QrScanHistoryPage> {
                       BoxShadow(
                         color: Theme.of(
                           context,
-                        ).colorScheme.shadow.withOpacity(0.05),
+                        ).colorScheme.shadow.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),

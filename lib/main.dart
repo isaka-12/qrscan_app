@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:qrscan_app/core/database/database_helper.dart';
@@ -14,6 +14,9 @@ import 'package:qrscan_app/features/qrscan/domain/usecase/clear_all_scans.dart';
 import 'package:qrscan_app/features/qrscan/presentation/pages/main_navigation_page.dart';
 import 'package:qrscan_app/features/qrscan/presentation/providers/qrscan_provider.dart';
 import 'package:qrscan_app/features/qrscan/presentation/widgets/qr_data_display.dart';
+import 'package:qrscan_app/features/qr_maker/data/datasources/created_code_local_datasource.dart';
+import 'package:qrscan_app/features/qr_maker/data/repositories/created_code_repository_impl.dart';
+import 'package:qrscan_app/features/qr_maker/presentation/providers/qr_maker_provider.dart';
 
 void main() {
   // Initialize dependencies
@@ -33,6 +36,11 @@ void main() {
   final searchScans = SearchScans(repository);
   final clearAllScans = ClearAllScans(repository);
 
+  // QR maker
+  final createdCodeRepository = CreatedCodeRepositoryImpl(
+    CreatedCodeLocalDataSource(databaseHelper),
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -42,6 +50,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => QrMakerProvider(createdCodeRepository),
         ),
       ],
       child: const MyApp(),
