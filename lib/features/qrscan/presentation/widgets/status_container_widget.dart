@@ -1,5 +1,5 @@
 // lib/features/qrscan/presentation/widgets/status_container_widget.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/theme/app_theme.dart';
 
@@ -44,7 +44,7 @@ class StatusContainerWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: statusConfig.shadowColor.withOpacity(0.1),
+            color: statusConfig.shadowColor.withValues(alpha: 0.1),
             blurRadius: statusConfig.type == StatusType.welcome ? 15 : 10,
             offset: Offset(0, statusConfig.type == StatusType.welcome ? 6 : 4),
           ),
@@ -127,10 +127,10 @@ class StatusContainerWidget extends StatelessWidget {
           type: type,
           backgroundColor: AppTheme.warningLight,
           shadowColor: AppTheme.warningColor,
-          iconBackgroundColor: AppTheme.warningColor.withOpacity(0.1),
+          iconBackgroundColor: AppTheme.warningColor.withValues(alpha: 0.1),
           iconColor: AppTheme.warningDark,
           titleColor: AppTheme.warningDark,
-          subtitleColor: AppTheme.warningDark.withOpacity(0.8),
+          subtitleColor: AppTheme.warningDark.withValues(alpha: 0.8),
           defaultIcon: Icons.hourglass_empty,
         );
 
@@ -142,7 +142,7 @@ class StatusContainerWidget extends StatelessWidget {
           iconBackgroundColor: AppTheme.successColor,
           iconColor: AppTheme.primaryTextDark,
           titleColor: AppTheme.successDark,
-          subtitleColor: AppTheme.successDark.withOpacity(0.8),
+          subtitleColor: AppTheme.successDark.withValues(alpha: 0.8),
           defaultIcon: Icons.check_circle,
         );
 
@@ -153,24 +153,24 @@ class StatusContainerWidget extends StatelessWidget {
           shadowColor: Theme.of(context).primaryColor,
           iconBackgroundColor: Theme.of(
             context,
-          ).colorScheme.onPrimary.withOpacity(0.2),
+          ).colorScheme.onPrimary.withValues(alpha: 0.2),
           iconColor: Theme.of(context).colorScheme.onPrimary,
           titleColor: Theme.of(context).colorScheme.onPrimary,
           subtitleColor: Theme.of(
             context,
-          ).colorScheme.onPrimary.withOpacity(0.9),
+          ).colorScheme.onPrimary.withValues(alpha: 0.9),
           defaultIcon: Icons.qr_code_scanner,
         );
 
       case StatusType.error:
         return _StatusConfig(
           type: type,
-          backgroundColor: AppTheme.appError.withOpacity(0.1),
+          backgroundColor: AppTheme.appError.withValues(alpha: 0.1),
           shadowColor: AppTheme.appError,
-          iconBackgroundColor: AppTheme.appError.withOpacity(0.1),
+          iconBackgroundColor: AppTheme.appError.withValues(alpha: 0.1),
           iconColor: AppTheme.appError,
           titleColor: AppTheme.appError,
-          subtitleColor: AppTheme.appError.withOpacity(0.8),
+          subtitleColor: AppTheme.appError.withValues(alpha: 0.8),
           defaultIcon: Icons.error_outline,
         );
 
@@ -179,10 +179,10 @@ class StatusContainerWidget extends StatelessWidget {
           type: type,
           backgroundColor: AppTheme.warningLight,
           shadowColor: AppTheme.warningColor,
-          iconBackgroundColor: AppTheme.warningColor.withOpacity(0.1),
+          iconBackgroundColor: AppTheme.warningColor.withValues(alpha: 0.1),
           iconColor: AppTheme.warningColor,
           titleColor: AppTheme.warningDark,
-          subtitleColor: AppTheme.warningDark.withOpacity(0.8),
+          subtitleColor: AppTheme.warningDark.withValues(alpha: 0.8),
           defaultIcon: Icons.warning_amber_outlined,
         );
     }

@@ -42,6 +42,11 @@ class QrScanRepositoryImpl implements QrScanRepository {
   }
 
   @override
+  Future<void> deleteScan(Scan scan) async {
+    await localDataSource.deleteScanMatching(scan.timestamp, scan.qrData);
+  }
+
+  @override
   Future<void> clearAllScans() async {
     await localDataSource.deleteAllScans();
     // Optionally clear remote data as well
