@@ -5,6 +5,7 @@ import 'package:qrscan_app/features/qrscan/domain/usecase/save_scan.dart';
 import 'package:qrscan_app/features/qrscan/domain/usecase/get_all_scans.dart';
 import 'package:qrscan_app/features/qrscan/domain/usecase/search_scans.dart';
 import 'package:qrscan_app/features/qrscan/domain/usecase/clear_all_scans.dart';
+import 'package:qrscan_app/features/qrscan/domain/usecase/delete_scan.dart';
 
 // Provider class for managing QR scan state and interactions.
 class QrScanProvider extends ChangeNotifier {
@@ -12,6 +13,7 @@ class QrScanProvider extends ChangeNotifier {
   final GetAllScans getAllScansUseCase;
   final SearchScans searchScansUseCase;
   final ClearAllScans clearAllScansUseCase;
+  final DeleteScan? deleteScanUseCase;
 
   bool isLoading = false;
   bool isProcessingScan = false;
@@ -29,8 +31,9 @@ class QrScanProvider extends ChangeNotifier {
     this.saveScanUseCase,
     this.getAllScansUseCase,
     this.searchScansUseCase,
-    this.clearAllScansUseCase,
-  ) {
+    this.clearAllScansUseCase, {
+    this.deleteScanUseCase,
+  }) {
     _initializeScans();
   }
 
@@ -104,6 +107,31 @@ class QrScanProvider extends ChangeNotifier {
       notifyListeners();
       return [];
     }
+  }
+
+  /// Delete one scan. Returns its former position (for undo), or -1.
+  Future<int> deleteScan(Scan scan) async {
+    final index = scans.indexOf(scan);
+    if (index < 0) return -1;
+    scans.removeAt(index);
+    notifyListeners();
+    try {
+      await deleteScanUseCase?.call(scan);
+    } catch (e) {
+      // Put it back if the database refused.
+      scans.insert(index, scan);
+      error = 'Failed to delete scan: $e';
+      notifyListeners();
+      rethrow;
+    }
+    return index;
+  }
+
+  /// Undo [deleteScan]: save the scan again at its old position.
+  Future<void> restoreScan(Scan scan, int index) async {
+    await saveScanUseCase(scan);
+    scans.insert(index.clamp(0, scans.length), scan);
+    notifyListeners();
   }
 
   /// Clear all scans

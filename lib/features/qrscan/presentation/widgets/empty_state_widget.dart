@@ -104,7 +104,7 @@ class EmptyStateWidget extends StatelessWidget {
 
       case EmptyStateType.noHistory:
         return _EmptyStateConfig(
-          defaultIcon: Icons.history,
+          defaultIcon: Icons.qr_code_scanner,
           iconSize: 48,
           iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
           iconBackgroundColor: Theme.of(
@@ -112,8 +112,10 @@ class EmptyStateWidget extends StatelessWidget {
           ).colorScheme.surfaceContainerHighest,
           titleColor: Theme.of(context).colorScheme.onSurface,
           subtitleColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          defaultTitle: 'No scan history',
-          defaultSubtitle: 'Your scanned QR codes will appear here',
+          defaultTitle: 'No scans yet',
+          defaultSubtitle:
+              'Tap Scan to read your first QR code. Each scan is saved here '
+              'with its time and place.',
         );
 
       case EmptyStateType.general:

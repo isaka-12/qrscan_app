@@ -1,5 +1,10 @@
 // Represents a scanned QR code with associated metadata.
 class Scan {
+  /// Address stored when the user turned "Save location" off.
+  static const noLocation = 'Location not saved';
+
+  bool get hasLocation => address != noLocation;
+
   final String qrData;
   final DateTime timestamp;
   final double latitude;

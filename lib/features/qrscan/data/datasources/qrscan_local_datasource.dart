@@ -103,6 +103,16 @@ class QrScanLocalDataSource {
     return await db.delete('scans', where: 'id = ?', whereArgs: [id]);
   }
 
+  /// Delete the scan saved at [timestamp] with [qrData].
+  Future<int> deleteScanMatching(DateTime timestamp, String qrData) async {
+    final db = await _databaseHelper.database;
+    return db.delete(
+      'scans',
+      where: 'timestamp = ? AND qr_data = ?',
+      whereArgs: [timestamp.toIso8601String(), qrData],
+    );
+  }
+
   /// Delete all scans (clear history)
   Future<int> deleteAllScans() async {
     final db = await _databaseHelper.database;

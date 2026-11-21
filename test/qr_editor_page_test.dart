@@ -46,22 +46,25 @@ void main() {
       ..devicePixelRatio = 2.6;
   });
   tearDown(() {
-    TestWidgetsFlutterBinding.ensureInitialized()
-        .platformDispatcher
-        .views
-        .first
+    TestWidgetsFlutterBinding.ensureInitialized().platformDispatcher.views.first
       ..resetPhysicalSize()
       ..resetDevicePixelRatio();
   });
 
-  testWidgets('editor shows a live preview and saves to My codes',
-      (tester) async {
+  testWidgets('editor shows a live preview and saves to My codes', (
+    tester,
+  ) async {
     final repo = _FakeRepo();
     final provider = QrMakerProvider(repo);
-    await tester.pumpWidget(_wrap(provider, const QrEditorPage(type: QrType.url)));
+    await tester.pumpWidget(
+      _wrap(provider, const QrEditorPage(type: QrType.url)),
+    );
 
     // Empty form: hint instead of a code, actions disabled.
-    expect(find.text('Fill in the details below to see your QR code'), findsOneWidget);
+    expect(
+      find.text('Fill in the details below to see your QR code'),
+      findsOneWidget,
+    );
     expect(find.byType(QrImageView), findsNothing);
 
     await tester.enterText(find.byType(TextField).first, 'bad');
@@ -87,7 +90,9 @@ void main() {
 
   testWidgets('wifi password field hides for open networks', (tester) async {
     final provider = QrMakerProvider(_FakeRepo());
-    await tester.pumpWidget(_wrap(provider, const QrEditorPage(type: QrType.wifi)));
+    await tester.pumpWidget(
+      _wrap(provider, const QrEditorPage(type: QrType.wifi)),
+    );
     expect(find.text('Password *'), findsOneWidget);
 
     await tester.tap(find.text('WPA/WPA2/WPA3'));
@@ -100,7 +105,9 @@ void main() {
   testWidgets('create page lists types and saved codes', (tester) async {
     final repo = _FakeRepo();
     final provider = QrMakerProvider(repo);
-    await tester.pumpWidget(_wrap(provider, const CreatePage(), scaffold: true));
+    await tester.pumpWidget(
+      _wrap(provider, const CreatePage(), scaffold: true),
+    );
     await tester.pumpAndSettle();
 
     for (final t in QrType.values) {

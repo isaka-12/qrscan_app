@@ -87,6 +87,17 @@ class StyledQr extends StatelessWidget {
 }
 
 extension QrTypeIcon on QrType {
+  /// Matches the colors used for scanned codes in the Scans list.
+  Color get color => switch (this) {
+    QrType.url => const Color(0xFF1E88E5),
+    QrType.text => const Color(0xFF757575),
+    QrType.wifi => const Color(0xFF43A047),
+    QrType.contact => const Color(0xFF8E24AA),
+    QrType.phone => const Color(0xFF00897B),
+    QrType.sms => const Color(0xFF00ACC1),
+    QrType.email => const Color(0xFFE53935),
+  };
+
   IconData get icon => switch (this) {
     QrType.url => Icons.link,
     QrType.text => Icons.notes,

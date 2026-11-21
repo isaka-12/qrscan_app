@@ -12,20 +12,29 @@ Map<String, String> vals(QrType t, Map<String, String> v) => {
 void main() {
   group('encode', () {
     test('url gets https:// when no scheme', () {
-      expect(QrEncoder.encode(QrType.url, {'url': ' example.com/a '}),
-          'https://example.com/a');
-      expect(QrEncoder.encode(QrType.url, {'url': 'http://x.org'}),
-          'http://x.org');
+      expect(
+        QrEncoder.encode(QrType.url, {'url': ' example.com/a '}),
+        'https://example.com/a',
+      );
+      expect(
+        QrEncoder.encode(QrType.url, {'url': 'http://x.org'}),
+        'http://x.org',
+      );
     });
 
     test('phone keeps leading + and digits only', () {
-      expect(QrEncoder.encode(QrType.phone, {'phone': '+255 (712) 345-678'}),
-          'tel:+255712345678');
+      expect(
+        QrEncoder.encode(QrType.phone, {'phone': '+255 (712) 345-678'}),
+        'tel:+255712345678',
+      );
     });
 
     test('sms uses SMSTO format', () {
       expect(
-        QrEncoder.encode(QrType.sms, {'phone': '0712 345678', 'message': 'Hi there'}),
+        QrEncoder.encode(QrType.sms, {
+          'phone': '0712 345678',
+          'message': 'Hi there',
+        }),
         'SMSTO:0712345678:Hi there',
       );
     });
@@ -90,10 +99,14 @@ void main() {
 
   group('validate', () {
     test('required fields', () {
-      expect(QrEncoder.validate(QrType.url, {'url': ''}),
-          'Website address is required');
-      expect(QrEncoder.validate(QrType.wifi, vals(QrType.wifi, {'ssid': 'Home'})),
-          'Password is required');
+      expect(
+        QrEncoder.validate(QrType.url, {'url': ''}),
+        'Website address is required',
+      );
+      expect(
+        QrEncoder.validate(QrType.wifi, vals(QrType.wifi, {'ssid': 'Home'})),
+        'Password is required',
+      );
       // Password not needed for open networks.
       expect(
         QrEncoder.validate(
@@ -116,13 +129,17 @@ void main() {
         ),
         'WPA passwords are at least 8 characters',
       );
-      expect(QrEncoder.validate(QrType.contact, {'phone': '0712345678'}),
-          'Enter a first or last name');
+      expect(
+        QrEncoder.validate(QrType.contact, {'phone': '0712345678'}),
+        'Enter a first or last name',
+      );
     });
 
     test('rejects content too large for one QR code', () {
       expect(
-        QrEncoder.validate(QrType.text, {'text': 'x' * (QrEncoder.maxBytes + 1)}),
+        QrEncoder.validate(QrType.text, {
+          'text': 'x' * (QrEncoder.maxBytes + 1),
+        }),
         isNotNull,
       );
     });
@@ -148,13 +165,19 @@ void main() {
     });
     test('inverted colors warn', () {
       expect(
-        const QrStyle(foreground: 0xFFFFFFFF, background: 0xFF000000).scanWarning,
+        const QrStyle(
+          foreground: 0xFFFFFFFF,
+          background: 0xFF000000,
+        ).scanWarning,
         contains('inverted'),
       );
     });
     test('low contrast warns', () {
       expect(
-        const QrStyle(foreground: 0xFFF3742D, background: 0xFFFFF3E0).scanWarning,
+        const QrStyle(
+          foreground: 0xFFF3742D,
+          background: 0xFFFFF3E0,
+        ).scanWarning,
         contains('Low contrast'),
       );
     });

@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,7 +23,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -50,6 +49,7 @@ class DatabaseHelper {
     ''');
 
     await _createCreatedCodesTable(db);
+    await _createLibraryTables(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -57,6 +57,35 @@ class DatabaseHelper {
     if (oldVersion < 2) {
       await _createCreatedCodesTable(db);
     }
+    // v3: photo library (folders + photos).
+    if (oldVersion < 3) {
+      await _createLibraryTables(db);
+    }
+  }
+
+  Future<void> _createLibraryTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE folders(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        color INTEGER NOT NULL,
+        created_at TEXT NOT NULL
+      )
+    ''');
+    // file_name is relative to the app's photo directory; folder_id NULL
+    // means "not in a folder".
+    await db.execute('''
+      CREATE TABLE photos(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        folder_id INTEGER,
+        file_name TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('CREATE INDEX idx_photos_folder ON photos(folder_id)');
+    await db.execute(
+      'CREATE INDEX idx_photos_created ON photos(created_at DESC)',
+    );
   }
 
   Future<void> _createCreatedCodesTable(Database db) async {

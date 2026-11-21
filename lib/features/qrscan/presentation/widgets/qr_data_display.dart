@@ -3,8 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:qrscan_app/core/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-
 enum QRDataType { text, url, imageUrl, email, phone, wifi, coordinates }
 
 class QRDataDisplay extends StatelessWidget {
@@ -156,24 +154,34 @@ class QRDataDisplay extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Data type header
-        Row(
+        // Data type header. Wrap (not Row) so the badge moves to the next
+        // line on narrow screens / large text instead of overflowing.
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Icon(
-              _getIcon(qrData),
-              size: isCompact ? 16 : 18,
-              color: AppTheme.appBlue,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _getTypeDescription(qrData),
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: AppTheme.appBlue,
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _getIcon(qrData),
+                  size: isCompact ? 16 : 18,
+                  color: AppTheme.appBlue,
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    _getTypeDescription(qrData),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: AppTheme.appBlue,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
             if (isActionable) ...[
-              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
@@ -230,11 +238,7 @@ class QRDataDisplay extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.broken_image,
-                      size: 48,
-                      color: AppTheme.appGrey,
-                    ),
+                    Icon(Icons.broken_image, size: 48, color: AppTheme.appGrey),
                     const SizedBox(height: 8),
                     Text(
                       'Failed to load image',
@@ -276,9 +280,7 @@ class QRDataDisplay extends StatelessWidget {
               child: SelectableText(
                 qrData,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isActionable
-                      ? AppTheme.appBlue
-                      : AppTheme.appDarkGrey,
+                  color: isActionable ? AppTheme.appBlue : AppTheme.appDarkGrey,
                   fontWeight: isActionable ? FontWeight.w500 : FontWeight.w400,
                 ),
               ),
